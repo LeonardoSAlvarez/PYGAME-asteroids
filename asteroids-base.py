@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         
         #carregando imagem de fundo
-        player_img = pygame.image.load(path.join(img_dir,"playerShip_orange.png"))
+        player_img = pygame.image.load(path.join(img_dir,"playerShip1_orange.png"))
         self.image = player_img
         
         #diminuindo a imagem
@@ -46,6 +46,18 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         
+        #velocidade da nave
+        self.speedx = 0
+        
+    #metodo que utiliza a posicao da navinha
+    def update(self):
+        self.rect.x =+ self.speedx
+        
+        #mantem dentro da tela
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
         
 # Inicialização do Pygame.
 pygame.init()
@@ -58,7 +70,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Asteroids")
 
 # Variável para o ajuste de velocidade
-clock = pygame.time.Clock()
+clock = pygame.time.Clock(30)
 
 # Carrega o fundo do jogo
 background = pygame.image.load(path.join(img_dir, 'starfield.png')).convert()
@@ -87,6 +99,25 @@ try:
             # Verifica se foi fechado
             if event.type == pygame.QUIT:
                 running = False
+            
+            #verifica se apertou alguma tecla
+            if event.type == pygame.KEYDOWN:
+                #dependendo da tecla
+                if event.key == pygame.K_LEFT:
+                    player.speedx = -8
+                if event.key == pygame.K_RIGHT:
+                    player.speedx = 8
+                    
+            #verifica se soltou tecla
+            if event.type == pygame.KEYUP:
+                #dependendo da tecla
+                if event.key == pygame.K_LEFT:
+                    player.speedx = 0
+                if event.key == pygame.K_LEFT:
+                    player.speedx = 0
+        #depois de processar os eventos
+        #atualiza a acao de cada sprite
+        all_sprites.update()
     
         # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
